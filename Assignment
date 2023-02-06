@@ -1,0 +1,65 @@
+Created the Pods as per the given instructions and application is running and working fine.
+Deleted the voting Pod
+[root@ip-172-31-9-18 k8s-specifications]# kubectl delete pod vote-94849dc97-s49r5
+pod "vote-94849dc97-s49r5" deleted
+
+pod "vote-94849dc97-s49r5" deleted
+
+But observed that new Voting pod is spawned as soon as the pod is deleted and application is not impacted
+
+[root@ip-172-31-9-18 k8s-specifications]# kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-bcrzt        1/1     Running   0          21m
+fortune                   2/2     Running   0          29h
+kubia-0                   1/1     Running   0          6h17m
+kubia-1                   1/1     Running   0          6h15m
+kubia-2                   1/1     Running   0          6h10m
+mongodb                   1/1     Running   0          6h50m
+redis-868d64d78-sblkz     1/1     Running   0          21m
+result-5d57b59f4b-xwtjd   1/1     Running   0          21m
+vote-94849dc97-fvsbm      1/1     Running   0          77s
+worker-dd46d7584-r4rwl    1/1     Running   0          21m
+
+
+Next deleted the worker pod
+[root@ip-172-31-9-18 k8s-specifications]# kubectl delete pod worker-dd46d7584-r4rwl
+pod "worker-dd46d7584-r4rwl" deleted
+
+But observed that new Worker pod is spawned as soon as the pod is deleted and application is not impacted
+
+[root@ip-172-31-9-18 k8s-specifications]# kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-bcrzt        1/1     Running   0          24m
+fortune                   2/2     Running   0          29h
+kubia-0                   1/1     Running   0          6h20m
+kubia-1                   1/1     Running   0          6h18m
+kubia-2                   1/1     Running   0          6h13m
+mongodb                   1/1     Running   0          6h53m
+redis-868d64d78-sblkz     1/1     Running   0          24m
+result-5d57b59f4b-xwtjd   1/1     Running   0          24m
+vote-94849dc97-fvsbm      1/1     Running   0          4m1s
+worker-dd46d7584-qdlqk    1/1     Running   0          34s
+
+Next deleted the DB pod
+
+[root@ip-172-31-9-18 k8s-specifications]# kubectl delete pod redis-868d64d78-sblkz
+pod "redis-868d64d78-sblkz" deleted
+
+Observed results were not captured only for few seconds when DB pod was deleted until the new DB pod was spawned
+
+[root@ip-172-31-9-18 k8s-specifications]# kubectl get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+db-b54cd94f4-bcrzt        1/1     Running   0          28m
+fortune                   2/2     Running   0          29h
+kubia-0                   1/1     Running   0          6h24m
+kubia-1                   1/1     Running   0          6h22m
+kubia-2                   1/1     Running   0          6h17m
+mongodb                   1/1     Running   0          6h57m
+redis-868d64d78-sqs7z     1/1     Running   0          25s
+result-5d57b59f4b-xwtjd   1/1     Running   0          28m
+vote-94849dc97-fvsbm      1/1     Running   0          8m23s
+worker-dd46d7584-qdlqk    1/1     Running   1          4m56s
+
+And also observed worker application was restarted once when DB pod was deleted.
+
+And application worked fine as soon as new DB pod came up and there was no much impact on application
